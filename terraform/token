@@ -1,0 +1,46 @@
+#!/usr/bin/env sh
+
+TOKEN_FILE="$HOME/.config/yandex-cloud/.iam-token"
+TOKEN_DURATION=43200  # 12 hours
+
+if [ "$(echo "$@" | grep -c '\-f')" -gt 0 ]; then
+    rm -f "${TOKEN_FILE}"
+fi
+
+shift
+
+echo "$@"
+
+function save_token() {
+    TOKEN=$(yc iam create-token "$@")
+
+    echo "$TOKEN $(date +%s)" > "$TOKEN_FILE"
+}
+
+function read_token() {
+    if [ -f "$TOKEN_FILE" ]; then
+        TOKEN_LINE=$(cat "$TOKEN_FILE")
+        TOKEN=$(echo "$TOKEN_LINE" | awk '{print $1}')
+        TIMESTAMP=$(echo "$TOKEN_LINE" | awk '{print $2}')
+
+        # Check if the token is still valid
+        CURRENT_TIME=$(date +%s)
+        if (( CURRENT_TIME - TIMESTAMP < TOKEN_DURATION )); then
+            echo "${TOKEN}"
+        else
+            # echo "Token is expired, fetching a new one..."
+            save_token
+            TOKEN_LINE=$(cat "$TOKEN_FILE")
+            TOKEN=$(echo "$TOKEN_LINE" | awk '{print $1}')
+            echo "${TOKEN}"
+        fi
+    else
+        # echo "Token file does not exist, fetching a new one..."
+        save_token
+        TOKEN_LINE=$(cat "$TOKEN_FILE")
+        TOKEN=$(echo "$TOKEN_LINE" | awk '{print $1}')
+        echo "${TOKEN}"
+    fi
+}
+
+read_token

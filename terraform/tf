@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+
+set -e
+
+cd $(dirname $0) || exit 1
+
+STATE_FILE="state.yaml"
+ACCESS_KEY_FILE="access-key.yaml"
+
+
+case $1 in
+    bootstrap)
+        export BUCKET_NAME="$(yq .stateBucket "${STATE_FILE}")"
+        KEY_ID_KEY="$(yq .secret_keys.secret_access_key "${STATE_FILE}")"
+        SECRET_KEY="$(yq .secret_keys.acess_key_id "${STATE_FILE}")"
+
+        export ACCESS_KEY_ID=$(yq ".${KEY_ID_KEY}" "${ACCESS_KEY_FILE}")
+        export SECRET_ACCESS_KEY=$(yq ".${SECRET_KEY}" "${ACCESS_KEY_FILE}")
+
+        cat state.tf | envsubst > state.tf
+        ;;
+    init)
+        shift
+        SECRET_KEY="$(yq .secret_keys.acess_key_id "${STATE_FILE}")"
+        SECRET_ACCESS_KEY=$(yq ".${SECRET_KEY}" "${ACCESS_KEY_FILE}")
+        terraform init -backend-config="secret_key=${SECRET_ACCESS_KEY}" $@
+        ;;
+    *)
+        YC_TOKEN=$(./token) terraform $@
+        ;;
+esac
