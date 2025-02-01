@@ -89,7 +89,7 @@ func main() {
 		StateBucket:     bucketName,
 		SaId:            saId,
 		LockboxSecretId: lockboxSecretId,
-		LockboxSecretKeys: LockboxSecretKeys{
+		LockboxSecretKeys: OutputLockboxSecretKeys{
 			AccessKeyId:     LockboxSecretKeyAccessKeyId,
 			SecretAccessKey: LockboxSecretKeySecretAccessKey,
 		},
@@ -146,12 +146,17 @@ type StateOutput struct {
 	// Id of lockbox secret with bucket credentials.
 	LockboxSecretId string `yaml:"lockboxSecretId"`
 	// Lockbox secret keys.
-	LockboxSecretKeys LockboxSecretKeys `yaml:"secretKeys"`
+	LockboxSecretKeys OutputLockboxSecretKeys `yaml:"secretKeys"`
+}
+
+type OutputLockboxSecretKeys struct {
+	AccessKeyId     string `yaml:"accessKeyId"`
+	SecretAccessKey string `yaml:"secretAccessKey"`
 }
 
 type LockboxSecretKeys struct {
-	AccessKeyId     string `yaml:"accessKeyId"`
-	SecretAccessKey string `yaml:"secretAccessKey"`
+	AccessKeyId     string `yaml:"access_key_id"`
+	SecretAccessKey string `yaml:"secret_access_key"`
 }
 
 func mustEnv(key string) string {
