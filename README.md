@@ -2,8 +2,8 @@
 
 ## Roadmap
 
-- [ ] Provision resources for Terraform bucket
-- [ ] Packing into binary instructions & distribution
+- [x] Provision resources for Terraform bucket
+- [x] Packing into binary instructions
 - [ ] Cobra
 - [ ] re-create `terraform/access-key.yaml` from `terraform/state.yaml`
 - [ ] list resources from "state.yaml"
@@ -11,6 +11,7 @@
 Lower priority:
 - [ ] dry run
 - [ ] dangling resources cleanup
+- [ ] reorganizing repo (provision script source code & distribution is separate from the terraform template)
 
 
 ## Steps
