@@ -9,8 +9,6 @@ fi
 
 shift
 
-echo "$@"
-
 function save_token() {
     TOKEN=$(yc iam create-token "$@")
 
