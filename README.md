@@ -16,5 +16,24 @@ Lower priority:
 ## Steps
 
 1. Fill up the "terraform/config.yaml" config.
-2. Run `cd scripts && YC_TOKEN=$(yc iam create-token) TF_DIR=../terraform go run ./cmd/main.go`
+2. Run: 
+```sh
+TF_DIR=./terraform YC_TOKEN=$(./terraform/token) yc-terraform-bootstrapper 
+```
 
+## Use repo as starter
+
+1. [Build](./#build)
+2. Run the command:
+
+```sh
+rm -rf ./scripts
+```
+
+## Build
+
+```
+BUILD_BIN_PATH=$(mktemp)
+CGO_ENABLED=0 go build -o "${BUILD_BIN_PATH}" ./...
+sudo mv -f "${BUILD_BIN_PATH}" /usr/local/bin/yc-terraform-bootstrapper
+```
