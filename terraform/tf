@@ -17,7 +17,8 @@ case $1 in
         export ACCESS_KEY_ID=$(yq ".${KEY_ID_KEY}" "${ACCESS_KEY_FILE}")
         export SECRET_ACCESS_KEY=$(yq ".${SECRET_KEY}" "${ACCESS_KEY_FILE}")
 
-        cat state.tf | envsubst > state.tf
+        envsubst <state.tf >.state.tf
+        mv -f .state.tf state.tf
         ;;
     init)
         shift

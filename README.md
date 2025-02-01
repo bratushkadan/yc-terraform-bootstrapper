@@ -33,7 +33,9 @@ rm -rf ./scripts
 ## Build
 
 ```
+cd scripts
 BUILD_BIN_PATH=$(mktemp)
 CGO_ENABLED=0 go build -o "${BUILD_BIN_PATH}" ./...
 sudo mv -f "${BUILD_BIN_PATH}" /usr/local/bin/yc-terraform-bootstrapper
+cd ../
 ```

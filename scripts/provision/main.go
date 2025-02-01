@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base32"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -96,6 +97,9 @@ func main() {
 	if err := yaml.NewEncoder(stateFile).Encode(out); err != nil {
 		log.Fatalf("failed to marshal state yaml output: %v", err)
 	}
+	fmt.Printf("AccessKeyId: %v\n", m[LockboxSecretKeyAccessKeyId])
+	fmt.Printf("SecretAccessKey: %v\n", m[LockboxSecretKeySecretAccessKey])
+
 	if err := yaml.NewEncoder(accessKeyFile).Encode(&LockboxSecretKeys{
 		AccessKeyId:     m[LockboxSecretKeyAccessKeyId],
 		SecretAccessKey: m[LockboxSecretKeySecretAccessKey],
@@ -111,7 +115,22 @@ func SetupConf() (Config, error) {
 		return conf, err
 	}
 	err = yaml.Unmarshal(confBytes, &conf)
-	return conf, err
+	if err != nil {
+		return conf, err
+	}
+
+	var errs []error
+	if conf.Name == "" {
+		errs = append(errs, errors.New(`"name" field in a config can't be empty`))
+	}
+	if conf.FolderId == "" {
+		errs = append(errs, errors.New(`"folderId" field in a config can't be empty`))
+	}
+	if len(errs) > 0 {
+		return conf, errors.Join(errs...)
+	}
+
+	return conf, nil
 }
 
 type Config struct {
