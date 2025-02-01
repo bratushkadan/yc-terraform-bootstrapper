@@ -97,8 +97,6 @@ func main() {
 	if err := yaml.NewEncoder(stateFile).Encode(out); err != nil {
 		log.Fatalf("failed to marshal state yaml output: %v", err)
 	}
-	fmt.Printf("AccessKeyId: %v\n", m[LockboxSecretKeyAccessKeyId])
-	fmt.Printf("SecretAccessKey: %v\n", m[LockboxSecretKeySecretAccessKey])
 
 	if err := yaml.NewEncoder(accessKeyFile).Encode(&LockboxSecretKeys{
 		AccessKeyId:     m[LockboxSecretKeyAccessKeyId],
